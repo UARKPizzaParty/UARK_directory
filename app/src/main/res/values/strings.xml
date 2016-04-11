@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">UARK_directory</string>
+    <string name="app_name">UARK App Directory</string>
     <string name="app_title">UARK Directory</string>
+
+    <string name="browse_directory_title">Directory</string>
+
 </resources>
