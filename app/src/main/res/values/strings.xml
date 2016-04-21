@@ -3,5 +3,7 @@
     <string name="app_title">UARK Directory</string>
 
     <string name="browse_directory_title">Directory</string>
+    <string name="browse_directory_button">Browse Directory</string>
+    <string name="directory_list_item_title_dev_seperator_text">" by "</string>
 
 </resources>
