@@ -2,8 +2,17 @@
     <string name="app_name">UARK App Directory</string>
     <string name="app_title">UARK Directory</string>
 
+    <!-- Strings for the BrowseDirectoryActivity -->
     <string name="browse_directory_title">Directory</string>
     <string name="browse_directory_button">Browse Directory</string>
     <string name="directory_list_item_title_dev_seperator_text">" by "</string>
+
+    <!-- Strings for the ListingActivity -->
+    <string name="listing_app_name">App Name</string>
+    <string name="listing_app_version_prefix">"v "</string>
+    <string name="listing_app_version">x.x.x</string>
+    <string name="listing_developer_prefix">"By: "</string>
+    <string name="listing_developer">Developer</string>
+    <string name="listing_download_button">Download</string>
 
 </resources>
