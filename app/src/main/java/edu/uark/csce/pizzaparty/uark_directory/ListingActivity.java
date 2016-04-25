@@ -1,14 +1,22 @@
 package edu.uark.csce.pizzaparty.uark_directory;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -54,21 +62,51 @@ public class ListingActivity extends AppCompatActivity {
 //        downloadButton // Not sure how we want to handle download button yet
 
         //Getting all the thumbnail images for the horizontal scrollview.
-        ArrayList<String> imageScrollViewUrls = new ArrayList<String>();
+        final ArrayList<String> imageScrollViewUrls = new ArrayList<>();
             imageScrollViewUrls.add("http://www.cicis.com/media/1138/pizza_trad_pepperoni.png");
             imageScrollViewUrls.add("http://www.mysticpizza.com/admin/resources/pizza-pepperoni-w857h456.jpg");
             imageScrollViewUrls.add("http://static.comicvine.com/uploads/original/11114/111144184/4791207-9790062099-Pizza.jpg");
             imageScrollViewUrls.add("http://thehillnews.org/wp-content/uploads/2016/03/Delicious-Pizza-Pictures.jpg");
             imageScrollViewUrls.add("http://www.cicis.com/media/1137/pizza_trad_alfredo.png");
         for (int i = 0; i < imageScrollViewUrls.size(); i++) {
-            ImageView imageView = new ImageView(this);
+            final ImageView imageView = new ImageView(this);
             imageView.setId(i);
             imageView.setPadding(2, 2, 2, 2);
             new ImageDownloaderTask(imageView).execute(imageScrollViewUrls.get(i));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP); //scales down maintaining aspect ratio
-
+            final int finalI = i;
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showImage(imageScrollViewUrls.get(finalI));
+                }
+            });
             imageScrollview.addView(imageView);
         }
 
     }
+
+    public void showImage(String url) {
+        Dialog builder = new Dialog(this);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                //nothing;
+            }
+        });
+
+        ImageView imageView = new ImageView(this);
+        new ImageDownloaderTask(imageView).execute(url);
+
+        //TODO: Make this refer to the existing download of the screenshot, instead of redowloading it!
+        builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        builder.show();
+    }
+
+
 }
