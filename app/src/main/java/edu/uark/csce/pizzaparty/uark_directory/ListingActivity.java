@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
@@ -66,11 +67,11 @@ public class ListingActivity extends AppCompatActivity {
             imageView.setPadding(2, 2, 2, 2);
             new ImageDownloaderTask(imageView).execute(imageScrollViewUrls.get(i));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP); //scales down maintaining aspect ratio
-            final int finalI = i;
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showImage(imageScrollViewUrls.get(finalI));
+
+                    showImage(imageView.getDrawable());
                 }
             });
             imageScrollview.addView(imageView);
@@ -93,7 +94,7 @@ public class ListingActivity extends AppCompatActivity {
     }
 
 
-    public void showImage(String url) {
+    public void showImage(Drawable img) {
         Dialog builder = new Dialog(this);
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         builder.getWindow().setBackgroundDrawable(
@@ -101,18 +102,18 @@ public class ListingActivity extends AppCompatActivity {
         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
-                //nothing;
+                Log.i(TAG, "Closed screenshot blowup.");
             }
         });
 
         ImageView imageView = new ImageView(this);
-        new ImageDownloaderTask(imageView).execute(url);
+        imageView.setImageDrawable(img);
 
-        //TODO: Make this refer to the existing download of the screenshot, instead of redowloading it!
         builder.addContentView(imageView, new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         builder.show();
+        Log.i(TAG, "Showed fullscreen screenshot.");
     }
 
 
