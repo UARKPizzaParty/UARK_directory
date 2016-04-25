@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -105,7 +106,6 @@ public class ListingActivity extends AppCompatActivity {
             imageView.setPadding(2, 2, 2, 2);
             new ImageDownloaderTask(imageView).execute(imageScrollViewUrls.get(i));
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER); //scales down maintaining aspect ratio
-            final int finalI = i;
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
