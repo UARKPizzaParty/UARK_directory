@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -21,8 +22,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import me.grantland.widget.AutofitHelper;
+
 public class ListingActivity extends AppCompatActivity {
 
+    private static final String TAG = "Listing";
     private int appId;
 
     @Override
@@ -86,6 +90,21 @@ public class ListingActivity extends AppCompatActivity {
 
     }
 
+    public void onClickTitle(View v) {
+        TextView titleView = (TextView) findViewById(R.id.app_title);
+        AutofitHelper.create(titleView);
+
+        //TODO: Support click again to resize back to original
+    }
+
+    public void onClickDev(View view) {
+        TextView devView = (TextView) findViewById(R.id.app_developer);
+        AutofitHelper.create(devView);
+
+        //TODO: Support click again to resize back to original
+    }
+
+
     public void showImage(String url) {
         Dialog builder = new Dialog(this);
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -107,6 +126,7 @@ public class ListingActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT));
         builder.show();
     }
+
 
 
 }
