@@ -79,6 +79,7 @@ public class BrowseDirectoryActivity extends AppCompatActivity {
                                 app.setCreateDate(new Date(jsonObject.get("createDate").getAsLong()));
                                 app.setNumImages(jsonObject.get("numImages").getAsInt());
                                 app.setThumbURL(getString(R.string.base_uri) + "/" + app.getName() + getString(R.string.png_extension));
+                                app.setApkURL(getString(R.string.base_uri) + "/" + app.getName() + getString(R.string.apk_extension));
                                 app.setScreenShotUrls(new ArrayList<String>());
                                 for (int j = 1; j <= app.getNumImages(); j++) {
                                     app.getScreenShotUrls().add(getString(R.string.base_uri) + "/" + app.getName() + j + getString(R.string.png_extension));

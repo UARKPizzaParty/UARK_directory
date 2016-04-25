@@ -86,7 +86,7 @@
         <TextView
             android:id="@+id/description_box"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:maxLines="6"
             android:scrollbars="vertical"
             android:text="@string/listing_description_box_placeholder"
@@ -107,7 +107,8 @@
             android:id="@+id/scrollview_inner_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="2dp">
         </LinearLayout>
     </HorizontalScrollView>
 

@@ -4,7 +4,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -17,6 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.ProgressCallback;
+
+import java.io.File;
 import java.util.ArrayList;
 
 import me.grantland.widget.AutofitHelper;
@@ -42,7 +49,7 @@ public class ListingActivity extends AppCompatActivity {
 
         // Retrieve values based on the appId received from BrowseDirectoryActivity
         Intent intent = getIntent();
-        App app = (App) intent.getSerializableExtra(BrowseDirectoryActivity.APP_ID);
+        final App app = (App) intent.getSerializableExtra(BrowseDirectoryActivity.APP_ID);
 
         // Set all the retrieved data into the activity views
         appNameView.setText(app.getName());
@@ -53,7 +60,39 @@ public class ListingActivity extends AppCompatActivity {
         descriptionBoxView.setText(app.getDescription());
         descriptionBoxView.setMovementMethod(new ScrollingMovementMethod()); // Setting description box scroll movement
         new ImageDownloaderTask(appThumbnailView).execute(app.getThumbURL());
-//        downloadButton // Not sure how we want to handle download button yet
+
+        final File file = new File(this.getFilesDir(), app.getName() + getString(R.string.apk_extension));
+        Log.i(TAG, file.getAbsolutePath());
+        downloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Ion.with(ListingActivity.this)
+                        .load(app.getApkURL())
+                        .progress(new ProgressCallback() {
+                            @Override
+                            public void onProgress(long downloaded, long total) {
+                                System.out.println("" + downloaded + " / " + total);
+                            }
+                        })
+                        .write(file)
+                        .setCallback(new FutureCallback<File>() {
+                            @Override
+                            public void onCompleted(Exception e, File file) {
+                                if (file != null) {
+                                    Log.i(TAG, "on complete: " + file.getAbsolutePath());
+                                    /*Intent promptInstall = new Intent(Intent.ACTION_VIEW)
+                                            .setDataAndType(Uri.parse("file://" + file.getAbsolutePath()),
+                                                    "application/vnd.android.package-archive");
+                                    startActivity(promptInstall);*/
+                                }
+                                if (e != null) {
+                                    Log.e(TAG, "error downloading", e);
+                                }
+                                Log.i(TAG, "download complete");
+                            }
+                        });
+            }
+        });
 
         //Getting all the thumbnail images for the horizontal scrollview.
         final ArrayList<String> imageScrollViewUrls = new ArrayList<>();
@@ -65,7 +104,7 @@ public class ListingActivity extends AppCompatActivity {
             imageView.setId(i);
             imageView.setPadding(2, 2, 2, 2);
             new ImageDownloaderTask(imageView).execute(imageScrollViewUrls.get(i));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP); //scales down maintaining aspect ratio
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER); //scales down maintaining aspect ratio
             final int finalI = i;
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -114,7 +153,6 @@ public class ListingActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT));
         builder.show();
     }
-
 
 
 }

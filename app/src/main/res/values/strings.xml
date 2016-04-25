@@ -21,5 +21,6 @@
     <string name="base_uri">http://uaf132856.ddns.uark.edu</string>
     <string name="get_all_apps">/UarkDirectory/request/app/getAllApps</string>
     <string name="png_extension">.png</string>
+    <string name="apk_extension">.apk</string>
 
 </resources>
