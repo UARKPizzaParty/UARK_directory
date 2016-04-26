@@ -1,13 +1,17 @@
 package edu.uark.csce.pizzaparty.uark_directory;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -62,36 +66,42 @@ public class ListingActivity extends AppCompatActivity {
         descriptionBoxView.setMovementMethod(new ScrollingMovementMethod()); // Setting description box scroll movement
         new ImageDownloaderTask(appThumbnailView).execute(app.getThumbURL());
 
-        final File file = new File(this.getFilesDir(), app.getName() + getString(R.string.apk_extension));
+        final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), app.getApkName());
         Log.i(TAG, file.getAbsolutePath());
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Ion.with(ListingActivity.this)
-                        .load(app.getApkURL())
-                        .progress(new ProgressCallback() {
-                            @Override
-                            public void onProgress(long downloaded, long total) {
-                                System.out.println("" + downloaded + " / " + total);
-                            }
-                        })
-                        .write(file)
-                        .setCallback(new FutureCallback<File>() {
-                            @Override
-                            public void onCompleted(Exception e, File file) {
-                                if (file != null) {
-                                    Log.i(TAG, "on complete: " + file.getAbsolutePath());
-                                    /*Intent promptInstall = new Intent(Intent.ACTION_VIEW)
-                                            .setDataAndType(Uri.parse("file://" + file.getAbsolutePath()),
-                                                    "application/vnd.android.package-archive");
-                                    startActivity(promptInstall);*/
+
+                if (ContextCompat.checkSelfPermission(ListingActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ListingActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                }
+                if (ContextCompat.checkSelfPermission(ListingActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    Ion.with(ListingActivity.this)
+                            .load(app.getApkURL())
+                            .progress(new ProgressCallback() {
+                                @Override
+                                public void onProgress(long downloaded, long total) {
+                                    System.out.println("" + downloaded + " / " + total);
                                 }
-                                if (e != null) {
-                                    Log.e(TAG, "error downloading", e);
+                            })
+                            .write(file)
+                            .setCallback(new FutureCallback<File>() {
+                                @Override
+                                public void onCompleted(Exception e, File file) {
+                                    if (file != null) {
+                                        Log.i(TAG, "Download complete: " + file.getAbsolutePath());
+                                        Intent promptInstall = new Intent(Intent.ACTION_VIEW);
+                                        promptInstall.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        promptInstall.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+                                        startActivity(promptInstall);
+                                    }
+                                    if (e != null) {
+                                        Log.e(TAG, "Error downloading apk", e);
+                                    }
+                                    Log.i(TAG, "Apk download complete");
                                 }
-                                Log.i(TAG, "download complete");
-                            }
-                        });
+                            });
+                }
             }
         });
 
@@ -154,7 +164,4 @@ public class ListingActivity extends AppCompatActivity {
         builder.show();
         Log.i(TAG, "Showed fullscreen screenshot.");
     }
-
-
-
 }

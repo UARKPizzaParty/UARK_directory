@@ -14,6 +14,7 @@ public class App implements Serializable {
     private Integer numImages;
     private String thumbURL;
     private String apkURL;
+    private String apkName;
     private ArrayList<String> screenShotUrls;
 
     public Integer getId() {
@@ -88,6 +89,14 @@ public class App implements Serializable {
         this.apkURL = apkURL;
     }
 
+    public String getApkName() {
+        return apkName;
+    }
+
+    public void setApkName(String apkName) {
+        this.apkName = apkName;
+    }
+
     public ArrayList<String> getScreenShotUrls() {
         return screenShotUrls;
     }
@@ -108,6 +117,7 @@ public class App implements Serializable {
                 ", numImages=" + numImages +
                 ", thumbURL='" + thumbURL + '\'' +
                 ", apkURL='" + apkURL + '\'' +
+                ", apkName='" + apkName + '\'' +
                 ", screenShotUrls=" + screenShotUrls +
                 '}';
     }
